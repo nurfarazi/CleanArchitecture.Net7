@@ -1,6 +1,7 @@
 using Application;
 using Infrastructure;
 using Presentation;
+using Serilog;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -16,6 +17,9 @@ builder.Services
     .AddInfrastructure()
     .AddPresentation();
 
+builder.Host.UseSerilog((hostingContext, loggerConfiguration) => loggerConfiguration
+    .ReadFrom.Configuration(hostingContext.Configuration));
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -24,6 +28,8 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+
+app.UseSerilogRequestLogging();
 
 app.UseHttpsRedirection();
 
